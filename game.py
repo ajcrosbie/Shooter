@@ -1,18 +1,19 @@
+from turtle import width
 import pygame
 import random
 import Targets
 
 
-def redrawWindow(win, targs):
+def redrawWindow(win, targs, width):
     win.fill((25,100,25))
     for targ in targs:
-        targ.draw(win)
+        targ.draw(win, width)
     pygame.display.update()
 
 def newTarg(WIDTH, type):
     pos = (random.randrange(WIDTH-20), random.randrange(WIDTH-20))
     colour = (255, 255, 255)
-    return Targets.target(pos, (100, 100), colour) # to be changed when types are added
+    return Targets.fastTarg(pos, (100, 100), colour) # to be changed when types are added
 
 
 def shooter(targs, WIDTH):
@@ -31,10 +32,11 @@ def shooter(targs, WIDTH):
 def runEvent(targs, WIDTH):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print("fuck go back")
             pygame.quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             targs = shooter(targs, WIDTH)
+    for targ in targs:
+        targ.move()
     return targs
 
 
@@ -43,9 +45,12 @@ def main():
     WIDTH = 500
     win = pygame.display.set_mode((WIDTH, WIDTH))
     targs.append(newTarg(WIDTH, 0))
+    clock = pygame.time.Clock()
     for i in range(100000):
-        redrawWindow(win, targs)
+        pygame.time.delay(60)
+        clock.tick(60)
         targs = runEvent(targs, WIDTH)
+        redrawWindow(win, targs, WIDTH)
 
 if __name__ == "__main__":
     main()
