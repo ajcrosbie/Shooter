@@ -12,9 +12,13 @@ def redrawWindow(win, targs, width):
 
 def newTarg(WIDTH, type):
     pos = (random.randrange(WIDTH-20), random.randrange(WIDTH-20))
-    colour = (255, 255, 255)
-    return Targets.fastTarg(pos, (100, 100), colour) # to be changed when types are added
-
+    i = random.randrange(3)
+    if i == 0:
+        return Targets.bigTarg(pos) # to be changed when types are added
+    elif i == 1:
+        return Targets.diagonalTarg(pos) # to be changed when types are added
+    elif i == 2:
+        return Targets.fastTarg(pos) # to be changed when types are added
 
 def shooter(targs, WIDTH):
     mouse = pygame.mouse.get_pos()
@@ -22,9 +26,37 @@ def shooter(targs, WIDTH):
         if mouse[0] > i.pos[0] and mouse[0] < i.pos[0]+i.size[0]:
             if mouse[1] > i.pos[1] and mouse[1] < i.pos[1]+i.size[1]:
                 tempTargs = targs.copy()
-                tempTargs.remove(i)
-                tempTargs.append(newTarg(WIDTH, 0))
-                return tempTargs
+                if i.die() == "not today":
+                    pass
+                else:
+                    points = i.die()
+                    tempTargs.remove(i)
+                    tempTargs.append(newTarg(WIDTH, 0))
+                    return tempTargs
+
+        if i.pos[0]+i.size[0] > WIDTH:
+            if mouse[0] > 0 and mouse[0] < i.pos[0]+i.size[0]-WIDTH:
+                if mouse[1] > i.pos[1] and mouse[1] < i.pos[1]+i.size[1]:
+                    tempTargs = targs.copy()
+                    if i.die() == "not today":
+                        pass
+                    else:
+                        points = i.die()
+                        tempTargs.remove(i)
+                        tempTargs.append(newTarg(WIDTH, 0))
+                        return tempTargs
+
+        if i.pos[1]+i.size[1] > WIDTH:
+            if mouse[1] > 0 and mouse[1] < i.pos[1]+i.size[1]-WIDTH:
+                if mouse[0] > i.pos[0] and mouse[0] < i.pos[0]+i.size[0]:
+                    tempTargs = targs.copy()
+                    if i.die()=="not today":
+                        pass
+                    else:
+                        points = i.die()   
+                        tempTargs.remove(i)
+                        tempTargs.append(newTarg(WIDTH, 0))
+                        return tempTargs
     return targs
     
 
